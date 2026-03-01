@@ -1,11 +1,10 @@
-
 -- :::Bootstrap lazy:::
-local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
+local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
-    local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-    local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
+    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+    local out = vim.fn.system { "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath }
     if vim.v.shell_error ~= 0 then
-        error('Error cloning lazy.nvim:\n' .. out)
+        error("Error cloning lazy.nvim:\n" .. out)
     end
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
@@ -77,25 +76,58 @@ vim.keymap.set("n", "<Leader>c", toggle_quickfix, { desc = "Toggle Quickfix List
 
 -- :::Plugins:::
 -- source: https://gist.github.com/smnatale/5372e4ef64b96e62a961eafc71cb670d
-vim.pack.add {
-    { src = 'https://github.com/neovim/nvim-lspconfig' },
-    { src = 'https://github.com/mason-org/mason.nvim' },
-    { src = 'https://github.com/mason-org/mason-lspconfig.nvim' },
-    { src = "https://github.com/L3MON4D3/LuaSnip" },
-    { src = "https://github.com/rafamadriz/friendly-snippets" },
-    { src = "https://github.com/Saghen/blink.cmp" },
-    { src = "https://github.com/nvim-telescope/telescope.nvim" },
-    { src = "https://github.com/nvim-lua/plenary.nvim" },
-}
+require("lazy").setup({
+    -- LSP
+    {
+        "mason-org/mason-lspconfig.nvim",
+        opts = {},
+        dependencies = {
+            { "mason-org/mason.nvim", opts = {} },
+            "neovim/nvim-lspconfig",
+        },
+    },
+    -- Telescope fuzzy finder
+    {
+        "nvim-telescope/telescope.nvim",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+        },
+        config = function()
+            local builtin = require("telescope.builtin")
+            vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "Telescope find files" })
+            vim.keymap.set("n", "<leader>sg", builtin.live_grep)
+            vim.keymap.set("n", "<leader>sb", builtin.buffers)
+        end
+    },
+    -- Snippets
+    {
+        "L3MON4D3/LuaSnip",
+        dependencies = { "rafamadriz/friendly-snippets" },
+        config = function()
+            require("luasnip.loaders.from_vscode").lazy_load()
+        end,
+    },
+    -- Autocomplete
+    {
+        "Saghen/blink.cmp",
+        opts = {
+            keymap = { preset = "super-tab" },
+            fuzzy = { implementation = "lua" },
+            sources = {
+                default = { "lsp", "path", "snippets", "buffer" },
+            },
+        },
+    },
+    -- Autopairs
+    {
+        "windwp/nvim-autopairs",
+        event = "InsertEnter",
+        opts = {},
+    },
+})
 
-local builtin = require('telescope.builtin')
-vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "Telescope find files" })
-vim.keymap.set("n", "<leader>sg", builtin.live_grep)
-vim.keymap.set("n", "<leader>sb", builtin.buffers)
-
-require('mason').setup()
-require('mason-lspconfig').setup()
-
+-- Disable neovim lua lsp errors
 vim.lsp.config("lua_ls", {
     settings = {
         Lua = {
@@ -115,18 +147,5 @@ vim.lsp.config("lua_ls", {
                 enable = false,
             },
         },
-    },
-})
-
-require("luasnip.loaders.from_vscode").lazy_load()
-require("blink.cmp").setup({
-    keymap = {
-        preset = 'super-tab'
-    },
-    fuzzy = {
-        implementation = "lua",
-    },
-    sources = {
-        default = { "lsp", "path", "snippets", "buffer" },
     },
 })
