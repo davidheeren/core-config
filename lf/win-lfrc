@@ -6,7 +6,7 @@ set shellflag "-cwa"
 set shellopts "-nop"
 
 set hidden true
-# set icons true
+set icons false
 
 map <enter> open
 
