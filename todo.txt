@@ -1,0 +1,3 @@
+
+finish lfrc keybinds
+why doesn't control-� work in neovim in psmux?

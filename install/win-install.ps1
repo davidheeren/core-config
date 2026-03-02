@@ -25,10 +25,13 @@ winget install Microsoft.PowerShell
 # Install powershell modules
 Install-Module -Name PSFzf
 Install-Module -Name PSReadLine
+# Nice for recycle using powershell terminal but not good for lf
+# Install-Module -Name PoshFunctions
 
 # Symlink config files
 New-SymLink "$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1" "..\powershell\Microsoft.PowerShell_profile.ps1"
 New-SymLink "$HOME\AppData\Local\nvim\init.lua" "..\nvim\init.lua"
 New-SymLink "$HOME\.config\psmux\psmux.conf" "..\tmux\tmux.conf"
+New-SymLink "$HOME\AppData\Roaming\lf\lfrc" "..\lf\win-lfrc"
 
 Write-Host "All done. Please update the terminal to use plain Powershell by default"

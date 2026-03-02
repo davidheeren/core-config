@@ -1,0 +1,32 @@
+
+set shell pwsh
+# Allow the usage of $args inside shell commands
+set shellflag "-cwa"
+# Speed up Powershell by skipping the profile
+set shellopts "-nop"
+
+set hidden true
+set icons true
+
+map <enter> open
+
+map e $nvim "$Env:f"
+
+# map <delete> $Import-Module PoshFunctions; Move-ToRecycleBin "$Env:fx"
+map <delete> trash
+map <s-delete> delete
+
+# Powershell needs two seperate very verbose recycle functions for files and directories for some reason
+cmd trash ${{
+    foreach ($f in $Env:fx -split "`n")
+    {
+        $f = $f.Trim()
+        if (Test-Path -PathType Container $f)
+        {
+            [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteDirectory($f, 'OnlyErrorDialogs', 'SendToRecycleBin')
+        } else
+        {
+            [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile($f, 'OnlyErrorDialogs', 'SendToRecycleBin')
+        }
+    }
+}}
