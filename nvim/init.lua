@@ -64,6 +64,9 @@ vim.keymap.set({ "n", "v", "x" }, "<leader>D", '"+D')
 vim.keymap.set({ "n", "v", "x" }, "<leader>p", '"+p')
 vim.keymap.set({ "n", "v", "x" }, "<leader>P", '"+P')
 
+-- 'C-^' works for some terminals but othertimes not
+vim.keymap.set("n", "<C-b>", "<cmd>b#<cr>")
+
 local function toggle_quickfix()
     local qf_winid = vim.fn.getqflist({ winid = 0 }).winid
     if qf_winid > 0 then
