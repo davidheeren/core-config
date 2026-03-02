@@ -1,5 +1,14 @@
+# core-config
 
-My minimal config for new computers
+Minimal config for Windows and Linux.
 
-Install with the win or linux install scripts
-Make sure to be in the install directory when running it
+## Windows
+```powershell
+git clone https://github.com/davidheeren/core-config.git
+cd core-config\install
+.\win-install.ps1
+```
+
+## Includes
+
+- lf, nvim, powershell, autohotkey, tmux
