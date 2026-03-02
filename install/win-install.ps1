@@ -60,5 +60,8 @@ winget install junegunn.fzf
 winget install Microsoft.PowerShell
 winget install AutoHotkey.AutoHotkey
 
+# Start right now bc we symlink it to run on startup
+..\autohotkey\global.ahk
+
 Write-Host "All done"
 Write-Host "Please update the terminal to use plain Powershell by default (pwsh)"
