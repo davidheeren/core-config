@@ -12,6 +12,8 @@ vim.opt.rtp:prepend(lazypath)
 -- :::Options:::
 vim.cmd.colorscheme("unokai")
 
+vim.opt.path:append("**")
+
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.cursorline = true
