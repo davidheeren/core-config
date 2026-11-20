@@ -128,7 +128,13 @@ require("lazy").setup({
         event = "InsertEnter",
         opts = {},
     },
+    {
+        "rose-pine/neovim",
+        name = "rose-pine"
+    },
 })
+
+vim.cmd('colorscheme rose-pine')
 
 -- Disable neovim lua lsp errors
 vim.lsp.config("lua_ls", {
