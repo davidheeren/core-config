@@ -11,8 +11,14 @@ alias grep='grep --color=auto'
 alias cdg='cd $(git rev-parse --show-toplevel)'
 mkcd () { mkdir "$@" && cd "$@"; }
 
+# start zoxide (z dir)
 if command -v zoxide &>/dev/null; then
     eval "$(zoxide init bash)"
+fi
+
+# start fzf (ctrl+r, ctrl+t, alt+c)
+if command -v fzf &>/dev/null; then
+    eval "$(fzf --bash)"
 fi
 
 # source: https://github.com/mathiasbynens/dotfiles/blob/main/.bash_prompt
