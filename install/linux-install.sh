@@ -11,7 +11,7 @@ case "$ID" in
     sudo dnf install -y neovim tmux fd-find fzf
     ;;
   alpine)
-    sudo apk add neovim tmux fd fzf
+    doas apk add neovim tmux fd fzf
     ;;
   arch)
     sudo pacman -Sy --noconfirm neovim tmux fd fzf
