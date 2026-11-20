@@ -3,18 +3,28 @@
 # https://www.reddit.com/r/bash/comments/1l1r0sj/how_would_i_make_a_script_that_can_install
 # install packages
 source /etc/os-release
+
+# No prefix needed if already root, otherwise prefer sudo and fall back to doas
+if [[ $EUID -eq 0 ]]; then
+    priv=""
+elif command -v sudo &>/dev/null; then
+    priv="sudo"
+else
+    priv="doas"
+fi
+
 case "$ID" in
   debian|ubuntu)
-    sudo apt-get install -y neovim tmux fd-find fzf
+    $priv apt-get install -y neovim tmux fd-find fzf
     ;;
   fedora)
-    sudo dnf install -y neovim tmux fd-find fzf
+    $priv dnf install -y neovim tmux fd-find fzf
     ;;
   alpine)
-    doas apk add neovim tmux fd fzf
+    $priv apk add neovim tmux fd fzf
     ;;
   arch)
-    sudo pacman -Sy --noconfirm neovim tmux fd fzf
+    $priv pacman -Sy --noconfirm neovim tmux fd fzf
     ;;
   # etc...
 esac
