@@ -1,0 +1,46 @@
+# docs: https://github.com/gokcehan/lf/blob/master/doc.md
+# Linux port of win-lfrc. On Linux lf already defines open, i (pager) and the
+# help/maps commands, so only the shell needs setting here.
+set shell bash
+
+# My config
+set hidden true
+# set icons true
+
+map <enter> open
+map <space>
+
+map o :toggle; down
+map O :toggle; up
+
+map <space>d mkdir
+map <space>f mkfile
+map <space>c copypath
+
+map w $$SHELL
+map e run nvim
+
+map <delete> trash
+map <s-delete> delete
+
+# Splits $fx on newlines so paths with spaces work
+cmd run ${{
+    readarray -t files <<< "$fx"
+    "$@" "${files[@]}"
+}}
+
+cmd trash run gio trash
+
+cmd copypath ${{echo "$fx" | wl-copy}}
+
+cmd mkdir ${{
+    printf "Directory name: "
+    read -r name
+    mkdir -p "$name"
+}}
+
+cmd mkfile ${{
+    printf "File name: "
+    read -r name
+    touch "$name"
+}}

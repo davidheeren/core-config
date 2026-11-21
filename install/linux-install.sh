@@ -15,18 +15,19 @@ fi
 
 case "$ID" in
   debian|ubuntu)
-    $priv apt-get install -y neovim tmux fd-find fzf
+    $priv apt-get install -y neovim tmux fd-find fzf lf
     ;;
   fedora)
-    $priv dnf install -y neovim tmux fd-find fzf
+    # lf is not in the official Fedora repos, so it comes from a COPR
+    $priv dnf copr enable -y lsevcik/lf
+    $priv dnf install -y neovim tmux fd-find fzf lf
     ;;
   alpine)
-    $priv apk add neovim tmux fd fzf
+    $priv apk add neovim tmux fd fzf lf
     ;;
   arch)
-    $priv pacman -Sy --noconfirm neovim tmux fd fzf
+    $priv pacman -Sy --noconfirm neovim tmux fd fzf lf
     ;;
-  # etc...
 esac
 
 # symlink dotfiles
@@ -63,5 +64,6 @@ new_symlink() {
 new_symlink "$HOME/.bashrc" "../bash/.bashrc"
 new_symlink "$HOME/.config/nvim/init.lua" "../nvim/init.lua"
 new_symlink "$HOME/.config/tmux/tmux.conf" "../tmux/tmux.conf"
+new_symlink "$HOME/.config/lf/lfrc" "../lf/linux-lfrc"
 
 echo "All done. You can source ~/.bashrc"
