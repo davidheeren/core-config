@@ -92,25 +92,36 @@ require("lazy").setup({
         },
     },
     {
-        'nvim-treesitter/nvim-treesitter',
-        build = ':TSUpdate',
+        "nvim-treesitter/nvim-treesitter",
+        branch = "main",
+        build = ":TSUpdate",
         lazy = false,
         config = function()
-            -- Auto install treesitter languages
-            -- Source: https://www.reddit.com/r/neovim/comments/1sezoxf/nvimtreesitter_auto_install_parsers/
-            vim.api.nvim_create_autocmd('FileType', {
+            local ts = require("nvim-treesitter")
+            -- install() skips parsers that are already installed
+            ts.install({ "lua", "markdown" })
+
+            -- Auto install parsers and start highlighting/indent
+            local available = ts.get_available()
+            vim.api.nvim_create_autocmd("FileType", {
+                group = vim.api.nvim_create_augroup("treesitter-start", { clear = true }),
                 callback = function(ev)
                     local lang = vim.treesitter.language.get_lang(ev.match)
-                    local available_langs = require('nvim-treesitter').get_available()
-                    local is_available = vim.tbl_contains(available_langs, lang)
-                    if is_available then
-                        local installed_langs = require('nvim-treesitter').get_installed()
-                        local installed = vim.tbl_contains(installed_langs, lang)
-                        if not installed then
-                            require('nvim-treesitter').install(lang):wait()
+                    if not vim.tbl_contains(available, lang) then
+                        return
+                    end
+                    local function start()
+                        if not vim.api.nvim_buf_is_valid(ev.buf) then
+                            return
                         end
-                        vim.treesitter.start()
-                        require('nvim-treesitter').indentexpr()
+                        vim.treesitter.start(ev.buf, lang)
+                        vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+                    end
+                    if vim.tbl_contains(ts.get_installed(), lang) then
+                        start()
+                    else
+                        -- install in the background, then start once it's done
+                        ts.install(lang):await(vim.schedule_wrap(start))
                     end
                 end,
             })
