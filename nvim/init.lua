@@ -91,42 +91,6 @@ require("lazy").setup({
             "neovim/nvim-lspconfig",
         },
     },
-    {
-        "nvim-treesitter/nvim-treesitter",
-        branch = "main",
-        build = ":TSUpdate",
-        lazy = false,
-        config = function()
-            local ts = require("nvim-treesitter")
-            -- install() skips parsers that are already installed
-            ts.install({ "lua", "markdown" })
-
-            -- Auto install parsers and start highlighting/indent
-            local available = ts.get_available()
-            vim.api.nvim_create_autocmd("FileType", {
-                group = vim.api.nvim_create_augroup("treesitter-start", { clear = true }),
-                callback = function(ev)
-                    local lang = vim.treesitter.language.get_lang(ev.match)
-                    if not vim.tbl_contains(available, lang) then
-                        return
-                    end
-                    local function start()
-                        if not vim.api.nvim_buf_is_valid(ev.buf) then
-                            return
-                        end
-                        vim.treesitter.start(ev.buf, lang)
-                        vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-                    end
-                    if vim.tbl_contains(ts.get_installed(), lang) then
-                        start()
-                    else
-                        -- install in the background, then start once it's done
-                        ts.install(lang):await(vim.schedule_wrap(start))
-                    end
-                end,
-            })
-        end
-    },
     -- Telescope fuzzy finder
     {
         "nvim-telescope/telescope.nvim",
